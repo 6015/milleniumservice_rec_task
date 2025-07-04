@@ -13,6 +13,17 @@ namespace IntegrationWebApp
 
             builder.Services.AddControllers();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowReactApp",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:3000")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
+
             builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
                 var configuration = builder.Configuration.GetConnectionString("Redis");
@@ -38,7 +49,7 @@ namespace IntegrationWebApp
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowReactApp");
             app.UseAuthorization();
 
 
